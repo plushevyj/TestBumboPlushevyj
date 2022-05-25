@@ -33,3 +33,11 @@ def create_book(req, resp):
 
     resp.status_code = 201
     resp.json = book._asdict()
+
+
+@app.route("/books/{id:d}", allowed_methods=["delete"])
+@login_required
+def delete_book(req, resp, id):
+    book_storage.delete(id)
+
+    resp.status_code = 204
