@@ -1,0 +1,1 @@
+STATIC_TOKEN = "ae4CMvqBe2"
