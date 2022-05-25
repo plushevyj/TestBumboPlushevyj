@@ -1,6 +1,14 @@
 from bumbo.api import API
+
+from auth import login_required, TokenMiddleware, STATIC_TOKEN
 from storage import BookStorage
-from auth import STATIC_TOKEN
+
+
+app = API()
+book_storage = BookStorage()
+book_storage.create(name="7 habits of highly effective people", author="Stephen Covey")
+app.add_middleware(TokenMiddleware)
+
 
 
 app = API()
@@ -16,3 +24,12 @@ def login(req, resp):
 def index(req, resp):
     books = book_storage.all()
     resp.html = app.template("index.html", context={"books": books})
+
+
+@app.route("/books", allowed_methods=["post"])
+@login_required
+def create_book(req, resp):
+    book = book_storage.create(**req.POST)
+
+    resp.status_code = 201
+    resp.json = book._asdict()
