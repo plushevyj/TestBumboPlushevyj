@@ -4,6 +4,16 @@ from bumbo.middleware import Middleware
 STATIC_TOKEN = "ae4CMvqBe2"
 
 
+class TokenMiddleware(Middleware):
+    _regex = re.compile(r"^Token: (\w+)$")
+
+    def process_request(self, req):
+        header = req.headers.get("Authorization", "")
+        match = self._regex.match(header)
+        token = match and match.group(1) or None
+        req.token = token
+
+
 class InvalidTokenException(Exception):
     pass
 
